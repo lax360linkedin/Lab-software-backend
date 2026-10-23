@@ -14,7 +14,7 @@ import com.labmanagement.entity.UserRole;
 import com.labmanagement.service.RolePermissionService;
 
 @RestController
-@RequestMapping("/api/role-permissions")
+@RequestMapping("/api/role/permissions")
 public class RolePermissionController {
 
 	private final RolePermissionService rolePermissionService;
@@ -97,6 +97,33 @@ public class RolePermissionController {
 
 		public void setAccessLevel(RolePermission.AccessLevel accessLevel) {
 			this.accessLevel = accessLevel;
+		}
+	}
+
+	@PatchMapping("/{id}/status")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<RolePermissionResponseDTO> updatePermissionStatus(@PathVariable Integer id,
+			@RequestParam Integer activeFlag) {
+
+		if (activeFlag != 0 && activeFlag != 1) {
+			throw new IllegalArgumentException("activeFlag must be 1 or 0");
+		}
+
+		RolePermission updated = rolePermissionService.updatePermissionStatus(id, activeFlag);
+
+		return ResponseEntity.ok(toResponseDTO(updated));
+	}
+
+	public static class RolePermissionStatusRequest {
+
+		private Integer activeFlag;
+
+		public Integer getActiveFlag() {
+			return activeFlag;
+		}
+
+		public void setActiveFlag(Integer activeFlag) {
+			this.activeFlag = activeFlag;
 		}
 	}
 }

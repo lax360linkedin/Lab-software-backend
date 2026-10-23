@@ -193,4 +193,14 @@ public class RolePermissionService {
 						&& permission.getAccessLevel() != RolePermission.AccessLevel.NONE);
 	}
 
+	public RolePermission updatePermissionStatus(Integer id, Integer activeFlag) {
+
+		RolePermission permission = rolePermissionDAO.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Role permission not found: " + id));
+
+		permission.setActiveFlag(activeFlag);
+
+		return rolePermissionDAO.save(permission);
+	}
+
 }
